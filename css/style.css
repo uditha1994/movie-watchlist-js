@@ -1,0 +1,25 @@
+:root{
+    --primary-color: #7209b7;
+    --secondary-color: #560bad;
+    --accent-color: #480ca8;
+    --dark-color: #212529;
+    --light-color: #f8f9fa;
+    --success-color: #4bb543;
+    --warning-color: #f1c40f;
+    --danger-color: #e74c3c;
+    --gray-color: #6c757d;
+    --light-gray: #e9ecef;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: 'Pippins', sans-serif;
+    background-color: #f5f3ff;
+    color: var(--dark-color);
+    line-height: 1.5;
+}
