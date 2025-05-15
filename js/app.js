@@ -11,8 +11,8 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-firebaseConfig.initializeApp(firebaseConfig);
-const database = firebaseConfig.database();
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
 
 //DOM element
 const movieForm = document.getElementById('movieForm');
@@ -39,27 +39,79 @@ let isEditing = false;
 let currentMovieId = null;
 
 //Initialize the application
-function init(){
+function init() {
     //setup event listeners
     movieForm.addEventListener('submit', handleFormSumbit);
     cancelBtn.addEventListener('click', resetForm);
     searchInput.addEventListener('input', filterMovies);
     filterStatus.addEventListener('change', filterMovies);
+
+    //star functionality
+    stars.forEach(star => {
+    });
+
+    //load movies from firebase
+    loadMovies();
 }
 
-function loadMovies(){}
+function loadMovies() { }
 
-function displayMovies(movies){}
+function displayMovies(movies) { }
 
-function handleFormSumbit(e){}
+function handleFormSumbit(e) {
+    e.preventDefault();
 
-function handleEditMovie(e){}
+    const title = titleInput.value.trim();
+    const year = yearInput.value;
+    const director = derectorInput.value.trim();
+    const genre = genreSelect.value;
+    const status = document.querySelector('input[name="status"]:checked').value;
+    const rating = ratingInput.value;
+    const notes = notesInput.value.trim();
 
-function handleDeleteMovie(e){}
+    if (!title) {
+        alert('Please enter a movie title');
+        return;
+    }
 
-function filterMovies(){}
+    const movieData = {
+        title,
+        year: year || null,
+        director: director || null,
+        genre,
+        status,
+        rating: rating ? parseInt(rating) : 0,
+        notes: notes || null,
+        createdAt: firebase.database.ServerValue.TIMESTAMP,
+        updatedAt: firebase.database.ServerValue.TIMESTAMP
+    }
 
-function resetForm(){}
+    if (isEditing) {
+        //update existing movie
+    } else {
+        //add new movie
+        database.ref('movies').push(movieData)
+            .then(() => {
+                showAlert('Movie added successfully!', 'success');
+                resetForm();
+            })
+            .catch(error => {
+                showAlert('Error adding movie: ' + error.message, 'error');
+            });
+    }
+}
+
+function handleEditMovie(e) { }
+
+function handleDeleteMovie(e) { }
+
+function filterMovies() { }
+
+function resetForm() { }
+
+function showAlert(message, type){
+    alert(`${type.toUpperCase()}: ${message}`);
+}
 
 //Initialize the app when DOM is loaded
 document.addEventListener('DOMContentLoaded', init);
