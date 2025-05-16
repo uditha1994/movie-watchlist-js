@@ -1,8 +1,13 @@
-
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
+import { auth, database } from './firebase.js';
+import {
+    ref,
+    onValue,
+    push,
+    update,
+    remove,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/9.6.0/firebase-database.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
 
 //DOM element
 const movieForm = document.getElementById('movieForm');
@@ -46,12 +51,25 @@ function init() {
     });
 
     //load movies from firebase
-    loadMovies();
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            loadMovies();
+        } else {
+            moviesList.innerHTML =
+                '<div class="empty-state">Please sign in to view your movies</div>';
+        }
+    });
 }
 
 function loadMovies() {
+    const user = auth.currentUser;
+    if (!user) return;
+
     //Load movies from firebase
-    database.ref('movies').on('value', (snapshot) => {
+    const userId = user.uid;
+    const movieRef = ref(database, `users/${userId}/movies`);
+
+    onValue(movieRef, (snapshot) => {
         const movies = [];
         let watchlist = 0;
         let watched = 0;
@@ -76,7 +94,10 @@ function loadMovies() {
         watchedCount.textContent = watched;
 
         displayMovies(movies);
-    })
+    }, (error) => {
+        console.error("Error loading movies:", error);
+        moviesList.innerHTML = '<div class="error">Error loading movies</div>';
+    });
 }
 
 //  Display movies in the UI
@@ -150,7 +171,7 @@ function displayMovies(movies) {
     });
 }
 
-function handleFormSumbit(e) {
+async function handleFormSumbit(e) {
     e.preventDefault();
 
     const title = titleInput.value.trim();
@@ -166,6 +187,14 @@ function handleFormSumbit(e) {
         return;
     }
 
+    const user = auth.currentUser;
+    if (!user) {
+        showAlert('You need to be signed in to save movies', 'error');
+        return;
+    }
+
+    const userId = user.uid;
+
     const movieData = {
         title,
         year: year || null,
@@ -178,35 +207,37 @@ function handleFormSumbit(e) {
         updatedAt: firebase.database.ServerValue.TIMESTAMP
     }
 
-    if (isEditing) {
-        //update existing movie
-        database.ref(`movies/${currentMovieId}`).update(movieData)
-        .then(() => {
-            showAlert('Movie updated successfully!!', 'success');
-            resetForm();
-        })
-        .catch(error => {
-            showAlert('error updating movie:'+ error.message, 'error');
-        });
+    try {
+        if (isEditing) {
+            //update existing movie
+            await update(ref(database,
+                `users/${userId}/movies/${currentMovieId}`), movieData);
+            showAlert('movie updated successfully!!', 'success');
 
-    } else {
-        //add new movie
-        database.ref('movies').push(movieData)
-            .then(() => {
-                showAlert('Movie added successfully!', 'success');
-                resetForm();
-            })
-            .catch(error => {
-                showAlert('Error adding movie: ' + error.message, 'error');
-            });
+        } else {
+            //add new movie
+            await push(ref(database, `users/${userId}/movies`), movieData);
+            showAlert('movie added successfully!!', 'success');
+        }
+        resetForm();
+    } catch (error) {
+        showAlert(`Error: ${error.message}`, 'error');
     }
 }
 
-function handleEditMovie(e) { 
+async function handleEditMovie(e) {
     const movieId = e.currentTarget.dataset.id;
+    const user = auth.currentUser;
+    if (!user) return;
 
-    database.ref(`movies/${movieId}`).once('value')
-    .then(snapshot => {
+    try {
+        const snapshot = await get(ref(database,
+            `users/${user.uid}/movies/${movieId}`));
+
+        if (!snapshot.exists()) {
+            throw new Error('Movie not found');
+        }
+
         const movie = snapshot.val();
 
         //fill the form with movie data
@@ -215,7 +246,7 @@ function handleEditMovie(e) {
         yearInput.value = movie.year || '';
         derectorInput.value = movie.director || '';
         genreSelect.value = movie.genre || 'Action';
-        
+
         document.querySelector(`input[name="status"][value="${movie.status}"]`).checked = true;
 
         ratingInput.value = movie.rating || 0;
@@ -228,36 +259,39 @@ function handleEditMovie(e) {
         saveBtn.textContent = 'Update Movie';
 
         //scroll to form
-        document.querySelector('.form-container').scrollIntoView({behavior: "smooth"});
-    })
-    .catch(error => {
-        showAlert('error loading movie:'+ error.message, 'error');
-    })
+        document.querySelector('.form-container').scrollIntoView({ behavior: "smooth" });
+    } catch (error) {
+        showAlert(`Error loading movie: ${error.message}`, 'error');
+    }
 }
 
-function handleDeleteMovie(e) {
-    if(!confirm('Are you sure want to delete this movie?')){
+async function handleDeleteMovie(e) {
+    if (!confirm('Are you sure want to delete this movie?')) {
         return;
     }
 
     const movieId = e.currentTarget.dataset.id;
+    const user = auth.currentUser;
+    if (!user) return;
 
-    database.ref(`movies/${movieId}`).remove()
-    .then(() => {
-        showAlert('Movie deleted successfully!!','success');
-    })
-    .catch(error => {
-        showAlert('Error deleting movie:'+ error.message, 'error');
-    });
- }
+    try {
+        await remove(ref(database,
+            `users/${user.uid}/movies/${movieId}`));
+        showAlert('Movie deleted successfully!!', 'success');
+    } catch (error) {
+        showAlert('Error deleting movie:' + error.message, 'error');
+    }
+}
 
-function filterMovies() { 
+function filterMovies() {
     const searchTerm = searchInput.value.toLowerCase();
     const stateFilter = filterStatus.value;
     const genreFilter = filterGenre.value;
+    const user = auth.currentUser;
 
-    database.ref('movies').once('value')
-    .then(snapshot => {
+    if (!user) return;
+
+    onValue(ref(database, `users/${user.uid}/movies`), (snapshot) => {
         const movies = [];
         snapshot.forEach(childSnapshot => {
             const movie = {
@@ -267,15 +301,15 @@ function filterMovies() {
 
             //apply filters
             const matchesSearch = movie.title.toLowerCase()
-            .includes(searchTerm) ||
-            (movie.director && movie.director.toLowerCase()
-            .includes(searchTerm));
+                .includes(searchTerm) ||
+                (movie.director && movie.director.toLowerCase()
+                    .includes(searchTerm));
 
-            const matchesStatus = stateFilter === 'all' 
-            || movie.status === stateFilter;
+            const matchesStatus = stateFilter === 'all'
+                || movie.status === stateFilter;
             const matchesGenre = !genreFilter || movie.genre === genreFilter;
 
-            if(matchesSearch && matchesStatus && matchesGenre){
+            if (matchesSearch && matchesStatus && matchesGenre) {
                 movies.push(movie);
             }
         });
@@ -334,7 +368,11 @@ function updateStarRating(rating) {
 }
 
 function showAlert(message, type) {
-    alert(`${type.toUpperCase()}: ${message}`);
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type}`;
+    alertDiv.textContent = message;
+    document.body.appendChild(alertDiv);
+    setTimeout(() => alertDiv.remove(), 3000);
 }
 
 //Initialize the app when DOM is loaded
