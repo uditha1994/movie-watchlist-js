@@ -2,6 +2,7 @@ import { auth, database } from './firebase.js';
 import {
     ref,
     onValue,
+    get,
     push,
     update,
     remove,
@@ -203,8 +204,8 @@ async function handleFormSumbit(e) {
         status,
         rating: rating ? parseInt(rating) : 0,
         notes: notes || null,
-        createdAt: firebase.database.ServerValue.TIMESTAMP,
-        updatedAt: firebase.database.ServerValue.TIMESTAMP
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
     }
 
     try {
