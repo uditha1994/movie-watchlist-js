@@ -1,14 +1,4 @@
-// Firebase Configurations
-const firebaseConfig = {
-    apiKey: "AIzaSyDso02eaYtGJ3GX4gF43shQohUkbRbVIio",
-    authDomain: "movie-wishlist-82bf5.firebaseapp.com",
-    databaseURL: "https://movie-wishlist-82bf5-default-rtdb.firebaseio.com",
-    projectId: "movie-wishlist-82bf5",
-    storageBucket: "movie-wishlist-82bf5.firebasestorage.app",
-    messagingSenderId: "319116680069",
-    appId: "1:319116680069:web:b102a0da70b514037802ec",
-    measurementId: "G-J46C194YDY"
-};
+
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -41,11 +31,12 @@ let currentMovieId = null;
 
 //Initialize the application
 function init() {
-    //setup event listeners
+    //setup event listenersfilterGenre
     movieForm.addEventListener('submit', handleFormSumbit);
     cancelBtn.addEventListener('click', resetForm);
     searchInput.addEventListener('input', filterMovies);
     filterStatus.addEventListener('change', filterMovies);
+    filterGenre.addEventListener('change', filterMovies);
 
     //star functionality
     stars.forEach(star => {
@@ -275,10 +266,13 @@ function filterMovies() {
             };
 
             //apply filters
-            const matchesSearch = movie.title.toLowerCase().includes(searchTerm) ||
-            (movie.director && movie.director.toLowerCase().includes(searchTerm));
+            const matchesSearch = movie.title.toLowerCase()
+            .includes(searchTerm) ||
+            (movie.director && movie.director.toLowerCase()
+            .includes(searchTerm));
 
-            const matchesStatus = stateFilter === 'all' || movie.status === stateFilter;
+            const matchesStatus = stateFilter === 'all' 
+            || movie.status === stateFilter;
             const matchesGenre = !genreFilter || movie.genre === genreFilter;
 
             if(matchesSearch && matchesStatus && matchesGenre){
