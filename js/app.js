@@ -6,9 +6,9 @@ import {
     push,
     update,
     remove,
-    serverTimestamp
+    serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-database.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
 
 //DOM element
 const movieForm = document.getElementById('movieForm');
@@ -53,12 +53,20 @@ function init() {
 
     //load movies from firebase
     onAuthStateChanged(auth, (user) => {
-        if (user) {
-            loadMovies();
-        } else {
-            moviesList.innerHTML =
-                '<div class="empty-state">Please sign in to view your movies</div>';
+        if (!user) {
+            window.location.href = 'index.html';
+            return;
         }
+
+        // Only allow access if email is verified
+        if (!user.emailVerified && window.location.pathname.includes('dashboard.html')) {
+            alert('Please verify your email address before accessing the dashboard.');
+            signOut(auth);
+            window.location.href = 'index.html';
+            return;
+        }
+
+        loadMovies();
     });
 }
 
