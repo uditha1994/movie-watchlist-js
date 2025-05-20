@@ -384,6 +384,47 @@ function showAlert(message, type) {
     setTimeout(() => alertDiv.remove(), 3000);
 }
 
+function updateThemeIcon(theme) {
+    const favicon = document.querySelector('link[rel="icon"]');
+    const themeColor = document.getElementById('theme-color');
+
+    // Create a new favicon link to force refresh
+    const newFavicon = favicon.cloneNode(true);
+
+    if (theme === 'dark') {
+        newFavicon.href = 'data:image/svg+xml,' + encodeURIComponent(`
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+                <style>path{fill:white}</style>
+                <path d="M20,30 L80,30 L80,70 L20,70 Z"/>
+                <path d="M20,30 L20,50 L10,50 L10,30 Z" opacity="0.8"/>
+                <path d="M80,30 L80,50 L90,50 L90,30 Z" opacity="0.8"/>
+                <circle cx="30" cy="50" r="5" fill="white"/>
+                <circle cx="50" cy="50" r="5" fill="white"/>
+                <circle cx="70" cy="50" r="5" fill="white"/>
+            </svg>
+        `);
+        themeColor.content = '#6a8fc5';
+    } else {
+        newFavicon.href = 'data:image/svg+xml,' + encodeURIComponent(`
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+                <style>path{fill:black}</style>
+                <path d="M20,30 L80,30 L80,70 L20,70 Z"/>
+                <path d="M20,30 L20,50 L10,50 L10,30 Z" opacity="0.8"/>
+                <path d="M80,30 L80,50 L90,50 L90,30 Z" opacity="0.8"/>
+                <circle cx="30" cy="50" r="5" fill="black"/>
+                <circle cx="50" cy="50" r="5" fill="black"/>
+                <circle cx="70" cy="50" r="5" fill="black"/>
+            </svg>
+        `);
+        themeColor.content = '#4a6fa5';
+    }
+
+    // Replace the favicon
+    document.head.removeChild(favicon);
+    document.head.appendChild(newFavicon);
+}
+
 //Initialize the app when DOM is loaded
 document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', updateThemeIcon('light'));
 

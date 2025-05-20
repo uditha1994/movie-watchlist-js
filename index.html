@@ -8,83 +8,96 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+    <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-    <div class="auth-container">
-        <div class="auth-header">
-            <h1><i class="fas fa-film"></i> CineTrack</h1>
-            <p>Track your favorite movies</p>
-        </div>
-
-        <div class="auth-tabs">
-            <button class="tab-btn active" data-tab="login">Login</button>
-            <button class="tab-btn" data-tab="register">Register</button>
-        </div>
-
-        <div class="auth-error" id="authError"></div>
-
-        <div class="auth-content">
-            <!-- Login Form -->
-            <form class="auth-form active" id="loginForm" data-tab="login">
-                <div class="form-group">
-                    <label for="loginEmail">Email</label>
-                    <input type="email" id="loginEmail" name="loginEmail" required>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div>
+                    <h1><i class="fas fa-film"></i> CineTrack</h1>
+                    <p>Track movies you want to watch or have watched</p>
                 </div>
-                <div class="form-group">
-                    <label for="loginPassword">Password</label>
-                    <input type="password" id="loginPassword" name="loginPassword" required>
-                </div>
-                <button class="btn btn-primary" type="submit">
-                    <i class="fas fa-sign-in-alt"></i>Login
+            </div>
+        </header>
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1><i class="fas fa-film"></i> CineTrack</h1>
+                <p>Track your favorite movies</p>
+            </div>
+
+            <div class="auth-tabs">
+                <button class="tab-btn active" data-tab="login">Login</button>
+                <button class="tab-btn" data-tab="register">Register</button>
+            </div>
+
+            <div class="auth-error" id="authError"></div>
+
+            <div class="auth-content">
+                <!-- Login Form -->
+                <form class="auth-form active" id="loginForm" data-tab="login">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" name="loginEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" name="loginPassword" required>
+                    </div>
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-sign-in-alt"></i>Login
+                    </button>
+                </form>
+                <button class="btn btn-google" id="googleLogin">
+                    <i class="fab fa-google"></i>Continue with Google
                 </button>
-            </form>
-            <button class="btn btn-google" id="googleLogin">
-                <i class="fab fa-google"></i>Continue with Google
-            </button>
 
-            <!-- Registration Form -->
-            <form class="auth-form" id="registerForm" data-tab="register">
-                <div class="form-group">
-                    <label for="registerEmail">Email</label>
-                    <input type="email" id="registerEmail" name="registerEmail" required>
-                </div>
-                <div class="form-group">
-                    <label for="registerPassword">Password</label>
-                    <input type="password" id="registerPassword" name="registerPassword" required>
-                </div>
-                <div class="form-group">
-                    <label for="registerConfirmPassword">Confirm Password</label>
-                    <input type="password" id="registerConfirmPassword" name="registerConfirmPassword" required>
-                </div>
-                <button class="btn btn-primary" type="submit">
-                    <i class="fas fa-user-plus"></i>Register
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <footer class="site-footer">
-        <div class="footer-content">
-            <p>© 2025 CineTrack. Developed by
-                <a href="https://github.com/uditha1994" target="_blank" rel="noopener noreferrer">
-                    Uditha Landekumbura
-                </a>
-            </p>
-            <div class="footer-links">
-                <a href="https://github.com/uditha1994/movie-watchlist-js" target="_blank" rel="noopener noreferrer">
-                    <i class="fab fa-github"></i> Source
-                </a>
-                <a href="https://linkedin.com/in/yourprofile" target="_blank" rel="noopener noreferrer">
-                    <i class="fab fa-linkedin"></i> LinkedIn
-                </a>
-                <a href="https://twitter.com/yourhandle" target="_blank" rel="noopener noreferrer">
-                    <i class="fab fa-twitter"></i> Twitter
-                </a>
+                <!-- Registration Form -->
+                <form class="auth-form" id="registerForm" data-tab="register">
+                    <div class="form-group">
+                        <label for="registerEmail">Email</label>
+                        <input type="email" id="registerEmail" name="registerEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Password</label>
+                        <input type="password" id="registerPassword" name="registerPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerConfirmPassword">Confirm Password</label>
+                        <input type="password" id="registerConfirmPassword" name="registerConfirmPassword" required>
+                    </div>
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-user-plus"></i>Register
+                    </button>
+                </form>
             </div>
         </div>
-    </footer>
+
+        <footer class="site-footer">
+            <div class="footer-content">
+                <p>© 2025 CineTrack. Developed by
+                    <a href="https://github.com/uditha1994" target="_blank" rel="noopener noreferrer">
+                        Uditha Landekumbura
+                    </a>
+                </p>
+                <div class="footer-links">
+                    <a href="https://github.com/uditha1994/movie-watchlist-js" target="_blank"
+                        rel="noopener noreferrer">
+                        <i class="fab fa-github"></i> Source
+                    </a>
+                    <a href="https://linkedin.com/in/yourprofile" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </a>
+                    <a href="https://twitter.com/yourhandle" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-twitter"></i> Twitter
+                    </a>
+                </div>
+            </div>
+        </footer>
+    </div>
 
     <script type="module" src="js/firebase.js"></script>
     <script type="module" src="js/auth.js"></script>
