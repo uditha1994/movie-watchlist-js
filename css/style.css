@@ -33,21 +33,33 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--text-color);
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    transition: transform 0.3s ease;
+    color: var(--dark-color);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    position: relative;
+    width: 40px;
+    height: 40px;
 }
 
 .theme-toggle:hover {
     transform: scale(1.1);
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .theme-toggle {
+    color: var(--text-color);
+}
+
+[data-theme="dark"] .theme-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .theme-icon {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 20px;
+    height: 20px;
     position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     transition: opacity 0.3s ease;
 }
 
@@ -70,11 +82,11 @@
 }
 
 body {
-    font-family: 'Pippins', sans-serif;
+    font-family: 'Poppins', sans-serif;
     background-color: #f5f3ff;
     color: var(--dark-color);
     line-height: 1.5;
-     transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .container {
@@ -107,6 +119,18 @@ header p {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
+    padding-right: 60px;
+}
+
+.header-left {
+    text-align: left;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
 .btn-logout {

@@ -19,6 +19,18 @@
     background-color: white;
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.theme-toggle.auth-page {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: var(--dark-color);
+}
+
+[data-theme="dark"] .theme-toggle.auth-page {
+    color: var(--text-color);
 }
 
 .auth-header {
